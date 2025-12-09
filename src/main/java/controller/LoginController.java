@@ -29,8 +29,26 @@ public class LoginController {
         String password = txtPass.getText();
 
         if (authenticate(email, password)) {
+            // 1. Show Success Message
             new Alert(Alert.AlertType.INFORMATION, "Login Successful!").showAndWait();
-            // We will add the Dashboard navigation here in the next step
+
+            // 2. NAVIGATE TO DASHBOARD
+            try {
+                // Get the current window (Stage)
+                Stage stage = (Stage) txtEmail.getScene().getWindow();
+
+                // Load the Dashboard View
+                // MAKE SURE "/view/DashboardForm.fxml" matches your file name exactly!
+                stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/DashboardForm.fxml"))));
+                stage.setTitle("Clothify Store - Dashboard");
+                stage.centerOnScreen();
+                stage.show();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                new Alert(Alert.AlertType.ERROR, "Could not load Dashboard. Check file path!").show();
+            }
+
         } else {
             new Alert(Alert.AlertType.ERROR, "Invalid Email or Password").show();
         }
@@ -38,12 +56,10 @@ public class LoginController {
 
     private boolean authenticate(String email, String password) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // Check DB for user with matching email
             Query<User> query = session.createQuery("FROM User WHERE email = :e", User.class);
             query.setParameter("e", email);
             User user = query.uniqueResult();
 
-            // Check if password matches
             if (user != null && user.getPassword().equals(password)) {
                 return true;
             }
