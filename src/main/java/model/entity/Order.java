@@ -17,5 +17,5 @@ public class Order {
 
     private LocalDate date;
     private Double total;
-    private Integer userId; // Who made the sale
+    private Integer userId;
 }

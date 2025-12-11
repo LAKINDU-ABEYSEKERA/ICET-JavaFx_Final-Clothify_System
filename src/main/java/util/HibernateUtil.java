@@ -1,5 +1,6 @@
 package util;
 
+import model.entity.OrderDetail;
 import model.entity.User;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -19,6 +20,7 @@ public class HibernateUtil {
                 configuration.addAnnotatedClass(User.class);
                 configuration.addAnnotatedClass(Product.class);
                 configuration.addAnnotatedClass(Order.class);
+                configuration.addAnnotatedClass(OrderDetail.class);
 
                 sessionFactory = configuration.buildSessionFactory();
             } catch (Exception e) {

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "products")
 public class Product {
     @Id
-    private String id; // E.g. "P001"
+    private String id;
 
     private String name;
     private String category;
