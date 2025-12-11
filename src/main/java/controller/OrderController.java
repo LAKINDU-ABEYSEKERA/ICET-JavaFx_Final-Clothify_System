@@ -113,21 +113,20 @@ public class OrderController implements Initializable {
 
     @FXML
     void btnPlaceOrderOnAction(ActionEvent event) {
-        String orderId = UUID.randomUUID().toString().substring(0, 8); // Generate random Order ID
+        String orderId = UUID.randomUUID().toString().substring(0, 8);
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Transaction tx = session.beginTransaction();
 
-            // 1. Save Order
+
             Order order = new Order();
             order.setOrderId(orderId);
             order.setDate(LocalDate.now());
             order.setTotal(Double.parseDouble(lblNetTotal.getText()));
             session.persist(order);
 
-            // 2. Save Details & Update Stock
+
             for (CartItem item : cartList) {
-                // Save Order Detail
                 OrderDetail detail = new OrderDetail();
                 detail.setOrderId(orderId);
                 detail.setProductId(item.getProductId());
@@ -135,16 +134,18 @@ public class OrderController implements Initializable {
                 detail.setUnitPrice(item.getUnitPrice());
                 session.persist(detail);
 
-                // Update Stock
                 Product product = session.get(Product.class, item.getProductId());
                 product.setStock(product.getStock() - item.getQty());
                 session.merge(product);
             }
 
             tx.commit();
+
+            printReceipt(orderId);
+
             new Alert(Alert.AlertType.INFORMATION, "Order Placed Successfully!").show();
             cartList.clear();
-            loadProducts(); // Refresh stock table
+            loadProducts();
             lblNetTotal.setText("0.00");
 
         } catch (Exception e) {
@@ -157,5 +158,32 @@ public class OrderController implements Initializable {
     void btnBackOnAction(ActionEvent event) throws IOException {
         Stage stage = (Stage) tblProducts.getScene().getWindow();
         stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/DashboardForm.fxml"))));
+    }
+
+    private void printReceipt(String orderId) {
+        try {
+
+            String path = getClass().getResource("/receipt.jrxml").getPath();
+
+
+            java.util.HashMap<String, Object> parameters = new java.util.HashMap<>();
+            parameters.put("orderId", orderId);
+            parameters.put("total", lblNetTotal.getText());
+
+
+            net.sf.jasperreports.engine.data.JRBeanCollectionDataSource dataSource =
+                    new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource(cartList);
+
+
+            net.sf.jasperreports.engine.JasperReport report = net.sf.jasperreports.engine.JasperCompileManager.compileReport(getClass().getResourceAsStream("/receipt.jrxml"));
+            net.sf.jasperreports.engine.JasperPrint print = net.sf.jasperreports.engine.JasperFillManager.fillReport(report, parameters, dataSource);
+
+
+            net.sf.jasperreports.view.JasperViewer.viewReport(print, false); // false = don't close app on exit
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Printing Failed: " + e.getMessage()).show();
+        }
     }
 }
