@@ -1,0 +1,76 @@
+/* ===== Root Background ===== */
+.root {
+    -fx-background-color: #121212;
+    -fx-font-family: "Segoe UI", "Poppins", sans-serif;
+}
+
+/* ===== Login Heading ===== */
+.loginheading {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-letter-spacing: 2px;
+}
+
+/* ===== TextFields (Email & Password) ===== */
+.textfield {
+    -fx-background-color: #1F1F1F;
+    -fx-text-fill: #FFFFFF;
+    -fx-prompt-text-fill: #9E9E9E;
+
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+
+    -fx-border-color: #333333;
+    -fx-border-width: 1.5;
+
+    -fx-padding: 10 14;
+    -fx-font-size: 14px;
+}
+
+/* Focus Effect */
+.textfield:focused {
+    -fx-border-color: #FF4D4D;
+    -fx-border-width: 2;
+    -fx-background-color: #1A1A1A;
+}
+
+/* ===== Login Button ===== */
+.loginBtn {
+    -fx-background-color: #FF4D4D;
+    -fx-text-fill: #FFFFFF;
+
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+
+    -fx-padding: 12 30;
+}
+
+/* Hover Effect */
+.loginBtn:hover {
+    -fx-background-color: #FF6B6B;
+}
+
+/* Pressed Effect */
+.loginBtn:pressed {
+    -fx-background-color: #E63E3E;
+}
+
+/* Responsive spacing */
+VBox {
+    -fx-padding: 40;
+}
+
+/* Improve small screens */
+@media screen and (max-width: 600px) {
+    .loginheading {
+        -fx-font-size: 26px;
+    }
+
+    .textfield {
+        -fx-font-size: 13px;
+    }
+}
